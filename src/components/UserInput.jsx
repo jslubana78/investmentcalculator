@@ -10,20 +10,17 @@ function UserInput() {
   })
   const [results, setResults] = useState([])
   useEffect(() => {
-    let resultsD = calculateInvestmentResults({ ...data })
-    setResults(resultsD)
-  }, [])
+    const resultsD = calculateInvestmentResults(data);
+    setResults(resultsD);
+  }, [data]); // now runs every time `data` changes
 
   const handleInputChange = (event) => {
-    const { name, value } = event.target
-    let newDataObj = { ...data, [name]: parseInt(value) }
-
-    setData(newDataObj)
-    //     console.log({ data, newDataObj })
-    let resultsD = calculateInvestmentResults({ ...newDataObj })
-    setResults(resultsD)
-    //     console.log(results)
-  }
+    const { name, value } = event.target;
+    const newDataObj = { ...data, [name]: parseInt(value) };
+    // console.log({ oldData: data, newDataObj });
+    setData(newDataObj); // triggers useEffect
+  };
+  
 
   let totalInterest
   return (
@@ -35,7 +32,7 @@ function UserInput() {
             <input
               type='number'
               value={data.initialInvestment}
-              onChange={() => handleInputChange}
+              onChange={handleInputChange}
               name='initialInvestment'
             />
           </div>
@@ -44,7 +41,7 @@ function UserInput() {
             <input
               type='number'
               value={data.annualInvestment}
-              onChange={(event) => handleInputChange(event)}
+              onChange={handleInputChange}
               name='annualInvestment'
             />
           </div>
@@ -55,7 +52,7 @@ function UserInput() {
             <input
               type='number'
               value={data.expectedReturn}
-              onChange={(event) => handleInputChange(event)}
+              onChange={handleInputChange}
               name='expectedReturn'
             />
           </div>
@@ -64,13 +61,14 @@ function UserInput() {
             <input
               type='number'
               value={data.duration}
-              onChange={(event) => handleInputChange(event)}
+              onChange={handleInputChange}
               name='duration'
             />
           </div>
         </div>
       </div>
-      <div id=''>
+      <div className='center'>
+        {data.duration < 1 && 'Duration should be atleast 1 year.'}
         {results.length > 0 && (
           <table id='result'>
             <thead>
